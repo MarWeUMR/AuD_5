@@ -9,6 +9,12 @@ public class Main {
 
         ArrayList<Integer> ray = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 9, 5, 8, 7, 4, 12, 6, 13, 17, 14, 19, 100, 22, 33));
 
+
+        BiggestElementsSolver.quickSort(ray, 0, ray.size()-1);
+
+        ray.forEach(System.out::println);
+
+
         BiggestElementsSolver.linearBE(ray, 2);
         var x = BiggestElementsSolver.splitList(ray);
 
