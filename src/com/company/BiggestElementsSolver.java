@@ -3,6 +3,7 @@ package com.company;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class BiggestElementsSolver {
 
@@ -29,41 +30,37 @@ public class BiggestElementsSolver {
         // Theta (n log n)
         // heap sort
 
-        return new ArrayList<>();
+        Queue<Integer> heap = new PriorityQueue<>(Collections.reverseOrder());
+        heap.addAll(a);
+
+
+        ArrayList<Integer> l = new ArrayList<>();
+
+        while (k-- > 0) {
+            l.add(heap.poll());
+        }
+
+        return l;
+
+
     }
 
     public static ArrayList<Integer> linearBE(ArrayList<Integer> a, int k) {
         // Theta (n)
+        int j = a.size() - k;
 
-        return new ArrayList<>();
+        int x = medianOfMedians(a, j);
+
+        return new ArrayList<>(a.stream()
+                .filter(i -> i > x)
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList()));
     }
 
-    public static void quickSort(ArrayList<Integer> a, int low, int high) {
-        if (low < high) {
-            int pivotIndex = partition(a, low, high);
-            quickSort(a, low, pivotIndex - 1);  //sort left of pivot
-            quickSort(a, pivotIndex, high);  //sort right of pivot
-        }
-    }
 
+    public static int medianOfMedians(List<Integer> a, int k) {
 
-    private static int partition(ArrayList<Integer> a, int low, int high) {
-        int pivot = mom(a.subList(low, high), (high - low + 1) / 2);
-        int i = low - 1;
-        for (int j = low; j < high; ++j) {
-            if (a.get(j) <= pivot) {
-                Collections.swap(a, ++i, j);
-            }
-        }
-        Collections.swap(a, ++i, high);
-        return i;
-    }
-
-    public static int mom(List<Integer> a, int k) {
-
-        if (a.size() <= 5) {
-            return a.get(a.size() / 2);
-        }
+        int pivot;
 
         int chunkSize = 5;
         AtomicInteger counter = new AtomicInteger();
@@ -73,7 +70,6 @@ public class BiggestElementsSolver {
                 .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / chunkSize))
                 .values();
 
-
         ArrayList<Integer> medians = new ArrayList<>();
 
         for (List<Integer> sublist : chunks) {
@@ -82,8 +78,40 @@ public class BiggestElementsSolver {
 
         }
 
-        return mom(medians, a.size()/10);
+        if (medians.size() <= 5) {
+            pivot = medians.get(medians.size() / 2);
+        } else {
+            pivot = medianOfMedians(medians, (medians.size()-1)/2);
+        }
 
+        // partitionierung
+        final int i = pivot;
+
+        List<Integer> low = a.stream()
+                .filter(number -> number < i)
+                .collect(Collectors.toList());
+
+        List<Integer> high = a.stream()
+                .filter(number -> number > i)
+                .collect(Collectors.toList());
+
+
+        if (k <= low.size()) {
+            return medianOfMedians((ArrayList) low, k);
+        } else if (k > low.size() + 1) {
+            return medianOfMedians((ArrayList) high, k - low.size() - 1);
+        } else {
+            return pivot;
+        }
 
     }
+
+    public static ArrayList<Integer> createSequenceInc(int n) {
+        return new ArrayList<>(IntStream.range(1, n + 1).boxed().collect(Collectors.toList()));
+    }
+
+    public static ArrayList<Integer> createSequenceDec(int n) {
+        return new ArrayList<>(IntStream.range(0, n).map(i -> n - i).boxed().collect(Collectors.toList()));
+    }
+
 }
