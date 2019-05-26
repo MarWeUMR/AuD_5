@@ -50,6 +50,14 @@ public class Main {
     }
 }
 /*
+
+Die Laufzeiten der Funktionen laufen in in zeitlicher Reihenfolge wie folgt ab:
+
+- Brute Force = n/2 * n => O(n^2)
+- Improved = n/2 * log n => O(n * log n)
+- linear = n/5 => O(n)
+
+
 ========================================
         Array Size: 1000
         Order: Decreasing
