@@ -51,24 +51,29 @@ public class BiggestElementsSolver {
 
         int x = medianOfMedians(a, j);
 
-        return new ArrayList<>(a.stream()
-                .filter(i -> i > x)
-                .sorted(Comparator.reverseOrder())
-                .collect(Collectors.toList()));
+        ArrayList<Integer> l = new ArrayList<>();
+
+        for (int i = 0; i < a.size(); i++) {
+            if (a.get(i) > x) {
+                l.add(a.get(i));
+            }
+        }
+
+        ArrayList<Integer> result = new ArrayList<>(l.subList(l.size() - k, l.size()));
+
+        Collections.sort(result, Collections.reverseOrder());
+
+        return result;
+
     }
 
 
-    public static int medianOfMedians(List<Integer> a, int k) {
+    private static int medianOfMedians(List<Integer> a, int k) {
 
         int pivot;
 
-        int chunkSize = 5;
-        AtomicInteger counter = new AtomicInteger();
 
-        Collection<List<Integer>> chunks = a.stream()
-                .sorted()
-                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / chunkSize))
-                .values();
+        ArrayList<ArrayList<Integer>> chunks = listChunker(a);
 
         ArrayList<Integer> medians = new ArrayList<>();
 
@@ -81,19 +86,26 @@ public class BiggestElementsSolver {
         if (medians.size() <= 5) {
             pivot = medians.get(medians.size() / 2);
         } else {
-            pivot = medianOfMedians(medians, (medians.size()-1)/2);
+            pivot = medianOfMedians(medians, (medians.size() - 1) / 2);
         }
 
         // partitionierung
-        final int i = pivot;
 
-        List<Integer> low = a.stream()
-                .filter(number -> number < i)
-                .collect(Collectors.toList());
 
-        List<Integer> high = a.stream()
-                .filter(number -> number > i)
-                .collect(Collectors.toList());
+        ArrayList<Integer> low = new ArrayList<>();
+        ArrayList<Integer> high = new ArrayList<>();
+
+        for (int j = 0; j < a.size(); j++) {
+
+            if (a.get(j) > pivot){
+                high.add(a.get(j));
+            } else if (a.get(j) < pivot){
+                low.add(a.get(j));
+            }
+
+        }
+
+
 
 
         if (k <= low.size()) {
@@ -112,6 +124,37 @@ public class BiggestElementsSolver {
 
     public static ArrayList<Integer> createSequenceDec(int n) {
         return new ArrayList<>(IntStream.range(0, n).map(i -> n - i).boxed().collect(Collectors.toList()));
+    }
+
+    private static ArrayList<ArrayList<Integer>> listChunker(List<Integer> l) {
+
+        List<ArrayList<Integer>> newList = new ArrayList<>();
+
+
+        int i = 0;
+
+        while (i < l.size()) {
+
+            ArrayList<Integer> chunk = new ArrayList<>();
+
+            for (int j = 0; j < 5; j++) {
+
+                if (j+i < l.size()){
+                    chunk.add(l.get(j + i));
+                } else {
+                    break;
+                }
+
+            }
+
+            i += 5;
+            Collections.sort(chunk, Collections.reverseOrder());
+            newList.add(chunk);
+
+        }
+
+
+        return (ArrayList)newList;
     }
 
 }

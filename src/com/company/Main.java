@@ -7,7 +7,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-
         for (int len : new int[]{1000, 10000, 100000, 200000}
         ) {
 
@@ -35,7 +34,7 @@ public class Main {
 
                     long t_start_dec = System.nanoTime();
                     if (method == 0) {
-                        //BiggestElementsSolver.bruteForceBE(a, len / 2);
+                        BiggestElementsSolver.bruteForceBE(a, len / 2);
                     } else if (method == 1) {
                         BiggestElementsSolver.improvedBE(a, len / 2);
                     } else {
@@ -54,22 +53,7 @@ public class Main {
 
         }
 
-/*
-        var x = BiggestElementsSolver.createSequenceDec(10);
-        var y = BiggestElementsSolver.createSequenceInc(10);
 
-        Arrays.stream(x).forEach(System.out::println);
-        System.out.println();
-        Arrays.stream(y).forEach(System.out::println);
-
-
-        ArrayList<Integer> ray = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 9, 5, 8, 7, 4, 12, 6, 13, 17, 14, 19, 100, 22, 33));
-
-
-        System.out.println(BiggestElementsSolver.improvedBE(ray, ray.size()));
-
-
-        BiggestElementsSolver.quickSort(ray, 0, ray.size() - 1);*/
 
 
     }
